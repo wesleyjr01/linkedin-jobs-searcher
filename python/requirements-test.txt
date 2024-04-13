@@ -1,4 +1,4 @@
+-e .
 -r requirements-dev.txt
-
 pytest
 pytest-freezegun

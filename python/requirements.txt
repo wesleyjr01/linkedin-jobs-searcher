@@ -1,4 +1,2 @@
-git+https://github.com/tomquirk/linkedin-api.git
-# linkedin-api==2.1.1
-# linkedin-api-client==0.3.0
-python-dotenv==1.0.1
+ratelimit==2.2.1
+linkedin-api==2.1.1
