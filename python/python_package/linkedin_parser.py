@@ -5,6 +5,7 @@ from linkedin_api import Linkedin
 
 from dotenv import load_dotenv
 import os
+import re
 
 import datetime
 from ratelimit import limits, sleep_and_retry
@@ -31,7 +32,6 @@ logger = get_logger()
 
 
 class LinkedinJobParser:
-
     def __init__(
         self,
         login_email: str,
@@ -93,6 +93,13 @@ class LinkedinJobParser:
                 json_line = json.dumps(item)
                 file.write(json_line + "\n")
 
+    @staticmethod
+    def is_word_in_text(word: str, text: str) -> bool:
+        # \b around the word ensures that it is a complete word, not part of another word
+        return (
+            re.search(r"\b" + re.escape(word) + r"\b", text, re.IGNORECASE) is not None
+        )
+
     @property
     def get_api_client(self):
         return Linkedin(self._login_email, self._login_password)
@@ -113,7 +120,9 @@ class LinkedinJobParser:
 
     def get_information_from_job(self, job_dict: Dict) -> Dict:
         job_info = {}
+        job_description = job_dict.get("description", {}).get("text")
         job_info["job_id"] = job_dict.get("jobPostingId")
+        job_info["job_title"] = job_dict.get("title")
         job_info["company_name"] = (
             job_dict.get("companyDetails", {})
             .get(
@@ -123,9 +132,22 @@ class LinkedinJobParser:
             .get("companyResolutionResult", {})
             .get("name")
         )
-        job_info["job_description"] = job_dict.get("description", {}).get("text")
-        job_info["job_title"] = job_dict.get("title")
         job_info["work_remote_allowed"] = job_dict.get("workRemoteAllowed")
+        job_info["is_aws_in_job_description"] = self.is_word_in_text(
+            "aws", job_description
+        )
+        job_info["is_terraform_in_job_description"] = self.is_word_in_text(
+            "terraform", job_description
+        )
+        job_info["is_python_in_job_description"] = self.is_word_in_text(
+            "terraform", job_description
+        )
+        job_info["is_usd_in_job_description"] = self.is_word_in_text(
+            "terraform", job_description
+        )
+        job_info["is_clt_in_job_description"] = self.is_word_in_text(
+            "terraform", job_description
+        )
         job_info["company_apply_url"] = (
             job_dict.get("applyMethod", {})
             .get("com.linkedin.voyager.jobs.ComplexOnsiteApply", {})
@@ -141,6 +163,7 @@ class LinkedinJobParser:
             job_dict.get("listedAt", 0)
         )
         job_info["listed_at_date"] = self.epoch_to_date(job_dict.get("listedAt", 0))
+        job_info["job_description"] = job_description
         return job_info
 
     @sleep_and_retry

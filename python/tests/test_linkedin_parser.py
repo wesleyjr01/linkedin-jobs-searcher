@@ -64,5 +64,16 @@ def test_export_as_jsonl():
         ), "The data written to the file does not match the expected output."
 
 
+def test_is_word_in_info():
+    word = "AWS"
+    text1 = "We are looking for a Cloud Engineer with experience in aWs."
+    text2 = "We are looking for a Cloud Engineer with experience in asdgAWSgasf."
+    text3 = "We are looking for a Cloud Engineer with experience in Azure."
+
+    assert LinkedinJobParser.is_word_in_text(word, text1) is True
+    assert LinkedinJobParser.is_word_in_text(word, text2) is False
+    assert LinkedinJobParser.is_word_in_text(word, text3) is False
+
+
 def test_get_information_from_job():
     pass
