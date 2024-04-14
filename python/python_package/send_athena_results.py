@@ -88,16 +88,13 @@ def parse_result_from_athena_query_into_jsonlines(payload) -> List[Dict]:
     return jsonlines_file
 
 def get_yesterdays_date():
-    # Get today's date
     today = datetime.datetime.now()
     
-    # Calculate yesterday's date
     yesterday = today - datetime.timedelta(days=1)
     
-    # Extract year, month, and day as strings formatted with two digits for month and day
     year = str(yesterday.year)
-    month = f"{yesterday.month:02d}"  # Formats the month as a two-digit number
-    day = f"{yesterday.day:02d}"      # Formats the day as a two-digit number
+    month = f"{yesterday.month:02d}"
+    day = f"{yesterday.day:02d}"
     
     return year, month, day
 
