@@ -297,7 +297,7 @@ def run_glue_crawler(crawler_name: str, boto3_session: boto3.Session) -> None:
 def lambda_handler(event, context):
 
     # Get environment variables
-    linkedin_email = os.environ["linkedin_email"]
+    linkedin_email = os.environ["LINKEDIN_EMAIL"]
     linkedin_password = os.environ["linkedin_password"]
     linkedin_bucket = os.environ["linkedin_bucket"]
     linkedin_jobs_table_prefix = os.environ["linkedin_jobs_table_prefix"]
