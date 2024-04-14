@@ -2,6 +2,8 @@ import json
 import logging
 from typing import Dict, List
 from linkedin_api import Linkedin
+
+from dotenv import load_dotenv
 import os
 import re
 import boto3
@@ -115,7 +117,6 @@ class S3Manager:
         logger.info(
             f"Dumped new file to: s3://{self.bucket_name}/{self.s3_new_file_prefix_with_hourly_partition}"
         )
-
 
 class LinkedinJobParser:
     def __init__(
@@ -233,7 +234,7 @@ class LinkedinJobParser:
         job_info["is_contractactor"] = self.is_word_in_text(
             "contractor", job_description
         )
-        job_info["is_401_present"] = self.is_word_in_text("401", job_description)
+        job_info["401_present"] = self.is_word_in_text("401", job_description)
         job_info["is_aws_in_job_description"] = self.is_word_in_text(
             "aws", job_description
         )
@@ -287,16 +288,12 @@ class LinkedinJobParser:
             list_of_parsed_jobs.append(jobs_info)
         return list_of_parsed_jobs
 
-
 def run_glue_crawler(crawler_name: str, boto3_session: boto3.Session) -> None:
     glue_client = boto3_session.client("glue")
     glue_client.start_crawler(Name=crawler_name)
-    logger.info(f"Glue Crawler {crawler_name} started")
-
-
+    logger.info(f"Started Glue Crawler: {crawler_name}")
+    
 def lambda_handler(event, context):
-
-    # Get environment variables
     linkedin_mail = os.environ["linkedin_mail"]
     linkedin_password = os.environ["linkedin_password"]
     linkedin_bucket = os.environ["linkedin_bucket"]
@@ -308,7 +305,7 @@ def lambda_handler(event, context):
     jobs_search_days_old_listed_job = int(os.environ["jobs_search_days_old_listed_job"])
     boto3_session = boto3.Session(region_name=aws_region)
 
-    # Get Linkedin Data
+    # Put Data to S3
     jobs_searcher = LinkedinJobParser(
         login_email=linkedin_mail,
         login_password=linkedin_password,
@@ -318,8 +315,6 @@ def lambda_handler(event, context):
         days_old_listed_job=jobs_search_days_old_listed_job,
     )
     jobs_info = jobs_searcher.get_list_of_parsed_jobs()
-
-    # Dump Linkedin Data to S3
     s3_manager = S3Manager(
         s3_table_prefix=linkedin_jobs_table_prefix,
         bucket_name=linkedin_bucket,
@@ -327,20 +322,15 @@ def lambda_handler(event, context):
     )
     s3_manager.put_data_to_s3_table_with_hourly_partition_as_jsonlines(jobs_info)
 
-    # Start Glue Crawler
-    run_glue_crawler("linkedin-jobs", boto3_session)
-
-    return {"statusCode": 200}
+    # Run Crawler
+    run_glue_crawler("linkedin-jobs")
 
 
 if __name__ == "__main__":
     # env variables
     try:
-        from dotenv import load_dotenv
-
         load_dotenv()
-        logger.info(f"Executing in local machine")
-        lambda_handler({}, {})
+        logger.info(f"Error loading .env file: {e}")
+        lambda_handler()
     except Exception as e:
         logger.error(f"Error loading .env file: {e}")
-        logger.error(f"Executing in AWS Environment")
