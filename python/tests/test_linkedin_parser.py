@@ -1,5 +1,5 @@
 import json
-from python_package.linkedin_parser import LinkedinJobParser
+from python_package.lambda_function import LinkedinJobParser
 from unittest.mock import patch, PropertyMock, mock_open
 
 
@@ -20,7 +20,7 @@ def test_epoch_to_date():
     "get_jobs",
     new_callable=PropertyMock,
 )
-@patch("python_package.linkedin_parser.LinkedinJobParser.get_api_client")
+@patch("python_package.lambda_function.LinkedinJobParser.get_api_client")
 def test_get_job_ids(p_client, p_get_jobs):
     p_client.return_value = None
     p_get_jobs.return_value = [
