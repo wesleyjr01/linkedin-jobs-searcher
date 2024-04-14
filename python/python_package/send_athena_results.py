@@ -4,7 +4,6 @@ import boto3
 import time
 import datetime
 import json
-from dotenv import load_dotenv
 
 # Define logger
 def get_logger(
@@ -98,9 +97,7 @@ def get_yesterdays_date():
     
     return year, month, day
 
-if __name__ == "__main__":
-    load_dotenv()
-
+def lambda_handler(event, context):
     # Declare Variables
     boto3_session = boto3.Session(region_name="us-east-1")
     athena_client = boto3_session.client('athena')
@@ -139,3 +136,15 @@ if __name__ == "__main__":
 
     # Send the results to SNS
     send_dict_as_sns_message(sns_client, parsed_query_results, sns_topic_arn)
+
+    return "200 Success"
+
+if __name__ == "__main__":
+    try:
+        from dotenv import load_dotenv
+        load_dotenv()
+        logger.info(f"Executing in local machine")
+        lambda_handler({}, {})
+    except Exception as e:
+        logger.error(f"Error loading .env file: {e}")
+        logger.error(f"Executing in AWS Environment")
