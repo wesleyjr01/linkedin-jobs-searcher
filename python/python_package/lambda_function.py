@@ -283,7 +283,7 @@ class LinkedinJobParser:
         for job_id in self._job_ids:
             job_dict = self.get_job(job_id)
             jobs_info = self.get_information_from_job(job_dict)
-            logger.info("Job information: %s", jobs_info)
+            logger.info("Fetching info from job: %s", jobs_info["job_id"])
             list_of_parsed_jobs.append(jobs_info)
         return list_of_parsed_jobs
 
