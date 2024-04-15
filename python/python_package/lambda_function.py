@@ -233,7 +233,11 @@ class LinkedinJobParser:
         job_info["is_contractactor"] = self.is_word_in_text(
             "contractor", job_description
         )
-        job_info["is_401_present"] = self.is_word_in_text("401", job_description)
+        job_info["is_401_present"] = (
+            self.is_word_in_text("401", job_description)
+            or self.is_word_in_text("401k", job_description)
+            or self.is_word_in_text("401K", job_description)
+        )
         job_info["is_aws_in_job_description"] = self.is_word_in_text(
             "aws", job_description
         )
