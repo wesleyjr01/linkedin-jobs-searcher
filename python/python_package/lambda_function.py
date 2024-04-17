@@ -226,8 +226,12 @@ class LinkedinJobParser:
             .get("name")
         )
         job_info["work_remote_allowed"] = job_dict.get("workRemoteAllowed")
-        job_info["only_usa"] = self.is_word_in_text(
-            "must be legally authorized to work in", job_description
+        job_info["only_usa"] = (
+            self.is_word_in_text(
+                "must be legally authorized to work in", job_description
+            )
+            or self.is_word_in_text("Only", job_info["job_title"])
+            or self.is_word_in_text("W2", job_description)
         )
         job_info["is_contract"] = self.is_word_in_text("contract", job_description)
         job_info["is_contractactor"] = self.is_word_in_text(
