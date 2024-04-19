@@ -126,7 +126,7 @@ class LinkedinJobParser:
         days_old_listed_job: int = 1,
         remote: str = "2",
         location: str = "Worldwide",
-        limit: int = 100,
+        limit: int = 150,
     ) -> None:
         self.keywords = keywords
         self.days_old_listed_job = days_old_listed_job
@@ -226,6 +226,12 @@ class LinkedinJobParser:
             .get("name")
         )
         job_info["work_remote_allowed"] = job_dict.get("workRemoteAllowed")
+        job_info["is_irrelevant_title"] = (
+            self.is_word_in_text("Pessoa", job_info["job_title"])
+            or self.is_word_in_text("Desenvolvedor", job_info["job_title"])
+            or self.is_word_in_text("Diversity", job_info["job_title"])
+            or self.is_word_in_text("Afirmativa", job_info["job_title"])
+        )
         job_info["only_usa"] = (
             self.is_word_in_text(
                 "must be legally authorized to work in", job_description

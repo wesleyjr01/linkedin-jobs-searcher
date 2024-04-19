@@ -130,7 +130,8 @@ def lambda_handler(event, context):
         is_aws_in_job_description=true AND
         is_python_in_job_description=true AND
         only_usa=false AND
-        is_401_present=false
+        is_401_present=false AND
+        is_irrelevant_title=false
     ) AND (
         CAST(ingested_year as INTEGER) >= {yesterday_year} AND
         CAST(ingested_month as INTEGER) >= {yesterday_month} AND

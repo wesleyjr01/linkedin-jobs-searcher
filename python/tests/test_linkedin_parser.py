@@ -74,6 +74,10 @@ def test_is_word_in_info():
     assert LinkedinJobParser.is_word_in_text(word, text2) is False
     assert LinkedinJobParser.is_word_in_text(word, text3) is False
 
+    word_2 = "Pessoa"
+    text4 = "Pessoa Engenheira de Dados."
+    assert LinkedinJobParser.is_word_in_text(word_2, text4) is True
+
 
 def test_get_information_from_job():
     pass
