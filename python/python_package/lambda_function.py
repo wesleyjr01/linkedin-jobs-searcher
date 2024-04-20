@@ -125,7 +125,7 @@ class LinkedinJobParser:
         keywords: str,
         days_old_listed_job: int = 1,
         remote: str = "2",
-        location: str = "Worldwide",
+        location: str = "United States",
         limit: int = 150,
     ) -> None:
         self.keywords = keywords
@@ -231,6 +231,7 @@ class LinkedinJobParser:
             or self.is_word_in_text("Desenvolvedor", job_info["job_title"])
             or self.is_word_in_text("Diversity", job_info["job_title"])
             or self.is_word_in_text("Afirmativa", job_info["job_title"])
+            or self.is_word_in_text("Engenheiro", job_info["job_title"])
         )
         job_info["only_usa"] = (
             self.is_word_in_text(
