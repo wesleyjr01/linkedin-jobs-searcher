@@ -232,6 +232,12 @@ class LinkedinJobParser:
             or self.is_word_in_text("Diversity", job_info["job_title"])
             or self.is_word_in_text("Afirmativa", job_info["job_title"])
             or self.is_word_in_text("Engenheiro", job_info["job_title"])
+            or self.is_word_in_text("Full-Stack", job_info["job_title"])
+            or self.is_word_in_text("Full Stack", job_info["job_title"])
+            or self.is_word_in_text("GCP", job_info["job_title"])
+            or self.is_word_in_text("Azure", job_info["job_title"])
+            or self.is_word_in_text("DevOps", job_info["job_title"])
+            or self.is_word_in_text("Node.js", job_info["job_title"])
         )
         job_info["only_usa"] = (
             self.is_word_in_text(
