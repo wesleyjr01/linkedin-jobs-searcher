@@ -126,7 +126,7 @@ class LinkedinJobParser:
         days_old_listed_job: int = 1,
         remote: str = "2",
         location: str = "United States",
-        limit: int = 150,
+        limit: int = 300,
     ) -> None:
         self.keywords = keywords
         self.days_old_listed_job = days_old_listed_job
